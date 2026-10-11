@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${sko.id == null} ? 'Ny sko' : 'Rediger sko')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="wrap smal">
+    <a class="tilbage" th:href="@{/admin/sko}">← Alle sko</a>
+    <div th:replace="~{fragments/layout :: beskeder}"></div>
+    <h1 th:text="${sko.id == null} ? 'Ny sko' : 'Rediger ' + ${sko.navn}">Sko</h1>
+
+    <form class="formular" th:action="@{/admin/sko}" th:object="${sko}" method="post">
+        <input type="hidden" th:field="*{id}">
+        <label>Navn
+            <input type="text" th:field="*{navn}">
+            <span class="felt-fejl" th:if="${#fields.hasErrors('navn')}" th:errors="*{navn}"></span>
+        </label>
+        <label>Mærke
+            <input type="text" th:field="*{maerke}">
+            <span class="felt-fejl" th:if="${#fields.hasErrors('maerke')}" th:errors="*{maerke}"></span>
+        </label>
+        <div class="to-kolonner">
+            <label>Kategori
+                <select th:field="*{kategori}">
+                    <option value="">Vælg…</option>
+                    <option th:each="k : ${kategorier}" th:value="${k}" th:text="${k.visningsnavn}"></option>
+                </select>
+                <span class="felt-fejl" th:if="${#fields.hasErrors('kategori')}" th:errors="*{kategori}"></span>
+            </label>
+            <label>Pris (kr)
+                <input type="number" step="0.01" min="0" th:field="*{pris}">
+                <span class="felt-fejl" th:if="${#fields.hasErrors('pris')}" th:errors="*{pris}"></span>
+            </label>
+        </div>
+        <label>Farve
+            <input type="color" th:field="*{farve}">
+        </label>
+        <label>Beskrivelse
+            <textarea rows="4" th:field="*{beskrivelse}"></textarea>
+        </label>
+        <button class="btn" type="submit">Gem sko</button>
+    </form>
+
+    <section th:if="${sko.id != null}" class="lager">
+        <h2>Lager pr. størrelse</h2>
+        <form class="formular" th:action="@{/admin/sko/{id}/lager(id=${sko.id})}" method="post">
+            <div class="lager-grid">
+                <label th:each="v : ${sko.varianterSorteret}">
+                    <span th:text="'Str. ' + ${v.stoerrelse}">Str. 42</span>
+                    <input type="number" min="0" th:name="'lager_' + ${v.stoerrelse}" th:value="${v.lager}">
+                </label>
+            </div>
+            <div class="to-kolonner">
+                <label>Tilføj ny størrelse
+                    <input type="number" name="nyStoerrelse" min="15" max="50" placeholder="fx 47">
+                </label>
+                <label>Antal på lager
+                    <input type="number" name="nyLager" min="0" value="0">
+                </label>
+            </div>
+            <button class="btn" type="submit">Opdater lager</button>
+        </form>
+    </section>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

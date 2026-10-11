@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head(${sko.navn})}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="wrap">
+    <a class="tilbage" th:href="@{/}">← Tilbage til butikken</a>
+    <div th:replace="~{fragments/layout :: beskeder}"></div>
+
+    <div class="produkt">
+        <div th:replace="~{fragments/layout :: billede(${sko}, 'stor')}"></div>
+
+        <div class="produkt-info">
+            <span class="maerke" th:text="${sko.maerke}">Mærke</span>
+            <h1 th:text="${sko.navn}">Navn</h1>
+            <div class="pris stor" th:text="${#numbers.formatDecimal(sko.pris, 1, 'POINT', 2, 'COMMA')} + ' kr'">0 kr</div>
+            <p th:text="${sko.beskrivelse}">Beskrivelse</p>
+
+            <form th:action="@{/kurv/tilfoej}" method="post">
+                <input type="hidden" name="skoId" th:value="${sko.id}">
+                <fieldset class="stoerrelser">
+                    <legend>Vælg størrelse</legend>
+                    <label th:each="v : ${sko.varianterSorteret}"
+                           th:classappend="${!v.erPaaLager()} ? 'udsolgt-str'"
+                           th:title="${v.erPaaLager()} ? ${v.lager} + ' på lager' : 'Udsolgt'">
+                        <input type="radio" name="variantId" th:value="${v.id}" th:disabled="${!v.erPaaLager()}">
+                        <span th:text="${v.stoerrelse}">42</span>
+                    </label>
+                </fieldset>
+                <label class="antal">Antal
+                    <input type="number" name="antal" value="1" min="1" max="10">
+                </label>
+                <button type="submit" class="btn stor" th:disabled="${sko.samletLager == 0}"
+                        th:text="${sko.samletLager == 0} ? 'Udsolgt' : 'Læg i kurv'">Læg i kurv</button>
+            </form>
+        </div>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

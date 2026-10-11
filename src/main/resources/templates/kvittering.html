@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Tak for din ordre')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="wrap smal">
+    <div class="kvittering">
+        <h1>Tak for din ordre! 🎉</h1>
+        <p>Ordrenummer <strong th:text="'#' + ${ordre.id}">#1</strong> ·
+            <span th:text="${#temporals.format(ordre.oprettet, 'dd-MM-yyyy HH:mm')}">dato</span></p>
+        <p>Vi sender en bekræftelse til <strong th:text="${ordre.email}">email</strong>.</p>
+
+        <table class="tabel">
+            <tr th:each="l : ${ordre.linjer}">
+                <td th:text="${l.antal} + ' × ' + ${l.variant.sko.navn} + ' (str. ' + ${l.variant.stoerrelse} + ')'">Vare</td>
+                <td class="hoejre" th:text="${#numbers.formatDecimal(l.linjeTotal, 1, 'POINT', 2, 'COMMA')} + ' kr'">0 kr</td>
+            </tr>
+            <tr>
+                <td><strong>Total</strong></td>
+                <td class="hoejre"><strong th:text="${#numbers.formatDecimal(ordre.total, 1, 'POINT', 2, 'COMMA')} + ' kr'">0 kr</strong></td>
+            </tr>
+        </table>
+
+        <p class="muted">Leveres til:<br><span th:text="${ordre.kundeNavn}"></span><br>
+            <span th:text="${ordre.adresse}"></span></p>
+        <a class="btn" th:href="@{/}">Tilbage til butikken</a>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

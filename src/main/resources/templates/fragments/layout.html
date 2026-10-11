@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="head(titel)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:text="${titel} + ' · Skobutikken'">Skobutikken</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+
+<header th:fragment="header" class="topbar">
+    <div class="wrap topbar-inner">
+        <a class="logo" th:href="@{/}">👟 Skobutikken</a>
+        <nav>
+            <a th:href="@{/}">Butik</a>
+            <a th:href="@{/admin}">Admin</a>
+            <a class="kurv-link" th:href="@{/kurv}">
+                Kurv <span class="badge" th:text="${kurvAntal}">0</span>
+            </a>
+        </nav>
+    </div>
+</header>
+
+<div th:fragment="beskeder">
+    <div class="alert ok" th:if="${besked}" th:text="${besked}"></div>
+    <div class="alert fejl" th:if="${fejl}" th:text="${fejl}"></div>
+</div>
+
+<div th:fragment="billede(sko, klasse)" th:class="'skobillede ' + ${klasse}"
+     th:style="'--farve:' + ${sko.farve ?: '#64748b'}">
+    <span>👟</span>
+</div>
+
+<footer th:fragment="footer" class="footer">
+    <div class="wrap">© Skobutikken · Fri fragt over 499 kr · 30 dages returret</div>
+</footer>
+
+</body>
+</html>

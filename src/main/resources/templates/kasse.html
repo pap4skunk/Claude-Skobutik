@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Kassen')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="wrap smal">
+    <h1>Kassen</h1>
+
+    <div class="kasse">
+        <form class="formular" th:action="@{/kasse}" th:object="${kasseForm}" method="post">
+            <label>Navn
+                <input type="text" th:field="*{navn}" autocomplete="name">
+                <span class="felt-fejl" th:if="${#fields.hasErrors('navn')}" th:errors="*{navn}"></span>
+            </label>
+            <label>Email
+                <input type="email" th:field="*{email}" autocomplete="email">
+                <span class="felt-fejl" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+            </label>
+            <label>Leveringsadresse
+                <textarea th:field="*{adresse}" rows="3" autocomplete="street-address"></textarea>
+                <span class="felt-fejl" th:if="${#fields.hasErrors('adresse')}" th:errors="*{adresse}"></span>
+            </label>
+            <button type="submit" class="btn stor">Bestil</button>
+        </form>
+
+        <aside class="opsummering">
+            <h2>Din ordre</h2>
+            <div class="linje" th:each="l : ${linjer}">
+                <span th:text="${l.antal} + ' × ' + ${l.variant.sko.navn} + ' (str. ' + ${l.variant.stoerrelse} + ')'">1 × Sko</span>
+                <span th:text="${#numbers.formatDecimal(l.linjeTotal(), 1, 'POINT', 2, 'COMMA')} + ' kr'">0 kr</span>
+            </div>
+            <div class="linje total">
+                <span>Total</span>
+                <span th:text="${#numbers.formatDecimal(total, 1, 'POINT', 2, 'COMMA')} + ' kr'">0 kr</span>
+            </div>
+        </aside>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

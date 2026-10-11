@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Admin · Ordrer')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="wrap">
+    <nav class="admin-nav">
+        <a th:href="@{/admin/sko}">Sko</a>
+        <a class="aktiv" th:href="@{/admin/ordrer}">Ordrer</a>
+    </nav>
+    <h1>Ordrer</h1>
+
+    <p class="muted" th:if="${#lists.isEmpty(ordrer)}">Der er endnu ingen ordrer.</p>
+
+    <table class="tabel" th:unless="${#lists.isEmpty(ordrer)}">
+        <thead>
+        <tr><th>#</th><th>Dato</th><th>Kunde</th><th>Varer</th><th class="hoejre">Total</th><th>Status</th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="o : ${ordrer}">
+            <td><a th:href="@{/ordre/{id}(id=${o.id})}" th:text="${o.id}">1</a></td>
+            <td th:text="${#temporals.format(o.oprettet, 'dd-MM-yyyy HH:mm')}">dato</td>
+            <td>
+                <span th:text="${o.kundeNavn}">Navn</span>
+                <div class="muted" th:text="${o.email}">email</div>
+            </td>
+            <td th:text="${o.antalVarer}">1</td>
+            <td class="hoejre" th:text="${#numbers.formatDecimal(o.total, 1, 'POINT', 2, 'COMMA')} + ' kr'">0</td>
+            <td>
+                <form th:action="@{/admin/ordrer/{id}/status(id=${o.id})}" method="post">
+                    <select name="status" onchange="this.form.submit()"
+                            th:disabled="${o.status.name() == 'ANNULLERET'}">
+                        <option th:each="st : ${statusser}" th:value="${st}" th:text="${st}"
+                                th:selected="${st == o.status}"></option>
+                    </select>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

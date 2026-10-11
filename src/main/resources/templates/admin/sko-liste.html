@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Admin · Sko')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="wrap">
+    <nav class="admin-nav">
+        <a class="aktiv" th:href="@{/admin/sko}">Sko</a>
+        <a th:href="@{/admin/ordrer}">Ordrer</a>
+    </nav>
+    <div th:replace="~{fragments/layout :: beskeder}"></div>
+
+    <div class="handlinger">
+        <h1>Sko</h1>
+        <a class="btn" th:href="@{/admin/sko/ny}">+ Ny sko</a>
+    </div>
+
+    <table class="tabel">
+        <thead>
+        <tr><th>Navn</th><th>Mærke</th><th>Kategori</th><th class="hoejre">Pris</th><th class="hoejre">Lager</th><th></th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="s : ${skoListe}">
+            <td><a th:href="@{/sko/{id}(id=${s.id})}" th:text="${s.navn}">Navn</a></td>
+            <td th:text="${s.maerke}">Mærke</td>
+            <td th:text="${s.kategori.visningsnavn}">Kategori</td>
+            <td class="hoejre" th:text="${#numbers.formatDecimal(s.pris, 1, 'POINT', 2, 'COMMA')}">0</td>
+            <td class="hoejre" th:text="${s.samletLager}" th:classappend="${s.samletLager == 0} ? 'udsolgt'">0</td>
+            <td class="hoejre knapper">
+                <a th:href="@{/admin/sko/{id}/rediger(id=${s.id})}">Rediger</a>
+                <form th:action="@{/admin/sko/{id}/slet(id=${s.id})}" method="post"
+                      onsubmit="return confirm('Slet denne sko?')">
+                    <button class="link-knap fare" type="submit">Slet</button>
+                </form>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

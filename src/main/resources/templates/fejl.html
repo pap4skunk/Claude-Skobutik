@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Ikke fundet')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="wrap smal tom">
+    <h1>Ups!</h1>
+    <p th:text="${besked}">Siden findes ikke.</p>
+    <a class="btn" th:href="@{/}">Til forsiden</a>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="da" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/layout :: head('Butik')}"></head>
+<body>
+<header th:replace="~{fragments/layout :: header}"></header>
+
+<main class="wrap">
+    <section class="hero">
+        <h1>Find dine næste sko</h1>
+        <p>Kvalitetssko til hele familien – til hverdag, fest og løb.</p>
+    </section>
+
+    <form class="filter" th:action="@{/}" method="get">
+        <input type="search" name="soeg" th:value="${soeg}" placeholder="Søg på navn eller mærke…">
+        <select name="kategori">
+            <option value="">Alle kategorier</option>
+            <option th:each="k : ${alleKategorier}" th:value="${k}" th:text="${k.visningsnavn}"
+                    th:selected="${k == valgtKategori}"></option>
+        </select>
+        <button type="submit" class="btn">Søg</button>
+    </form>
+
+    <p class="muted" th:if="${#lists.isEmpty(sko)}">Ingen sko matcher din søgning.</p>
+
+    <div class="grid">
+        <a class="kort" th:each="s : ${sko}" th:href="@{/sko/{id}(id=${s.id})}">
+            <div th:replace="~{fragments/layout :: billede(${s}, '')}"></div>
+            <div class="kort-indhold">
+                <span class="tag" th:text="${s.kategori.visningsnavn}">Kategori</span>
+                <span class="maerke" th:text="${s.maerke}">Mærke</span>
+                <h3 th:text="${s.navn}">Navn</h3>
+                <div class="pris" th:text="${#numbers.formatDecimal(s.pris, 1, 'POINT', 2, 'COMMA')} + ' kr'">0 kr</div>
+                <span class="udsolgt" th:if="${s.samletLager == 0}">Udsolgt</span>
+            </div>
+        </a>
+    </div>
+</main>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+</body>
+</html>
